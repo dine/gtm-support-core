@@ -16,6 +16,11 @@ export interface OnReadyOptions {
   script: HTMLScriptElement;
 }
 
+export interface DataAttributes {
+  name: string;
+  value: string;
+}
+
 /**
  * Options for `loadScript` function.
  */
@@ -42,6 +47,10 @@ export interface LoadScriptOptions {
    * @see [Using Google Tag Manager with a Content Security Policy](https://developers.google.com/tag-manager/web/csp)
    */
   nonce?: string;
+  /**
+   * Will add data attributes to script tag.
+   */
+  dataAttributes?: DataAttributes[]
   /**
    * Where to append the script element.
    *
@@ -138,6 +147,12 @@ export function loadScript(
 
   if (config.nonce) {
     script.setAttribute('nonce', config.nonce);
+  }
+
+  if (config.dataAttributes) {
+    config.dataAttributes.forEach(({ name, value }) => {
+      script.setAttribute(`data-${name}`, value);
+    });
   }
 
   if (config.scriptType) {

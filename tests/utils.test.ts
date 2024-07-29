@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { hasScript, loadScript } from '../src/index';
-import type { DynamicDataLayerWindow } from '../src/utils';
+import type { DataAttributes, DynamicDataLayerWindow } from '../src/utils';
 import { resetDataLayer, resetHtml } from './test-utils';
 
 describe('utils', () => {
@@ -24,6 +24,7 @@ describe('utils', () => {
       async: boolean;
       defer: boolean;
       nonce: string;
+      dataAttributes?: DataAttributes[];
       scriptType: string;
     };
     function expectScriptToBeCorrect({
@@ -154,6 +155,40 @@ describe('utils', () => {
           async: true,
           defer: false,
           nonce: 'test',
+          scriptType: '',
+        });
+        expect(script).toBe(document.scripts.item(0));
+      },
+    );
+
+    // Test dataAttributes
+    const dataAttributes: DataAttributes[] = [
+      { name: 'test', value: 'test' },
+      { name: 'test2', value: 'test2' },
+    ];
+    test(
+      JSON.stringify({
+        compatibility: false,
+        defer: false,
+        dataAttributes,
+      }),
+      () => {
+        expect(window.dataLayer).toBeUndefined();
+        expect(document.scripts.length).toBe(0);
+
+        const script: HTMLScriptElement = loadScript('GTM-DEMO', {
+          compatibility: false,
+          defer: false,
+          dataAttributes,
+        });
+
+        expectDataLayerToBeCorrect();
+        expectScriptToBeCorrect({
+          src: 'https://www.googletagmanager.com/gtm.js?id=GTM-DEMO',
+          async: true,
+          defer: false,
+          nonce: '',
+          dataAttributes,
           scriptType: '',
         });
         expect(script).toBe(document.scripts.item(0));

@@ -1,4 +1,5 @@
 import type { GtmIdContainer, GtmQueryParams } from './gtm-container';
+import { type DataAttributes } from './utils';
 
 /**
  * Options passed to GTM Support.
@@ -58,6 +59,10 @@ export interface GtmSupportOptions {
    * @see [Using Google Tag Manager with a Content Security Policy](https://developers.google.com/tag-manager/web/csp)
    */
   nonce?: string;
+  /**
+   * Will add data attributes to script tag.
+   */
+  dataAttributes?: DataAttributes[];
   /**
    * Where to append the script element.
    *
